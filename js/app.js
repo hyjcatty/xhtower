@@ -797,11 +797,23 @@ $(document).ready(function() {
         touchcookie();
         AD_Conf();
     });
+    $("#ADManage").on('click',function(){
+        CURRENT_URL = "ADManage";
+        active_menu("ADManage");
+        touchcookie();
+        AD_Manage();
+    });
     $("#NeonConf").on('click',function(){
         CURRENT_URL = "NeonConf";
         active_menu("NeonConf");
         touchcookie();
         Neon_Conf();
+    });
+    $("#NeonManage").on('click',function(){
+        CURRENT_URL = "NeonManage";
+        active_menu("NeonManage");
+        touchcookie();
+        Neon_Manage();
     });
     $("#WarningLimit").on('click',function(){
         CURRENT_URL = "WarningLimit";
@@ -1816,7 +1828,19 @@ function AD_Conf(){
     hide_searchbar();
     $("#Undefined").css("display","block");
 }
+function AD_Manage(){
+    clear_window();
+    write_title("施工中","");
+    hide_searchbar();
+    $("#Undefined").css("display","block");
+}
 function Neon_Conf(){
+    clear_window();
+    write_title("施工中","");
+    hide_searchbar();
+    $("#Undefined").css("display","block");
+}
+function Neon_Manage(){
     clear_window();
     write_title("施工中","");
     hide_searchbar();

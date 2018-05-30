@@ -57,7 +57,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="#" class="site_title"><i class="fa fa-leaf"></i> <span>智慧铁塔</span></a>
+                        <a href="#" class="site_title"><!--i class="fa fa-leaf"></i--><i style="border: 0px"><img src='./svg/fushan_white.png' style='width:36px;hight:36px;margin-bottom: 5px'/></i> <span>智慧铁塔</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -86,7 +86,7 @@
                                         <li><a href="#" id="DevManage">设备信息</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-bar-chart-o"></i> 测量管理 <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-bar-chart-o"></i> 监控管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="#" id="MPMonitor">地图监控</a></li>
                                         <li><a href="#" id="MPStaticMonitorTable">塔站列表</a></li>
@@ -100,7 +100,7 @@
                                         <li><a href="#" id="WarningLimit">告警门限</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-flag-checkered"></i>性能管理 <span class="fa fa-chevron-down"></span></a>
+                                <!--li><a><i class="fa fa-flag-checkered"></i>性能管理 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="#" id="AuditTarget">业务指标</a></li>
                                         <li><a href="#" id="AuditStability">稳定性统计</a></li>
@@ -109,7 +109,7 @@
                                         <li><a href="#" id="AuditQuality">质量统计</a></li>
                                     </ul>
                                 </li>
-                                <!--li><a><i class="fa fa-tachometer"></i> 仪器操作 <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-tachometer"></i> 仪器操作 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="#" id="InstConf">参数设置</a></li>
                                         <li><a href="#" id="InstRead">瞬时读数</a></li>
@@ -129,10 +129,16 @@
                                         <li><a href="#" id="GeoDiffusionAnalysis">扩散分析</a></li>
                                     </ul>
                                 </li-->
+                                <li><a><i class="fa fa-tachometer"></i>灯带管理 <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="#" id="NeonConf">参数设置</a></li>
+                                        <li><a href="#" id="NeonManage">彩灯设置</a></li>
+                                    </ul>
+                                </li>
                                 <li><a><i class="fa fa-television"></i>广告和门户 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="#" id="ADConf">广告管理</a></li>
-                                        <li><a href="#" id="NeonConf">彩灯设置</a></li>
+                                        <li><a href="#" id="ADConf">内容管理</a></li>
+                                        <li><a href="#" id="ADManage">播放控制</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -2328,7 +2334,7 @@
                                                 </div>
                                                 <div class="col-md-3 col-sm-6 col-xs-12">
                                                     <div class="input-group" >
-                                                        <span class="input-group-addon" id="WarningHandlePoint" style="min-width: 100px">查询项目</span>
+                                                        <span class="input-group-addon" id="WarningHandlePoint" style="min-width: 100px">查询塔站</span>
                                                         <select class="form-control" placeholder="对应塔台" aria-describedby="basic-addon1" id="WarningHandlePoint_choice">
 
                                                         </select>
@@ -4567,7 +4573,8 @@
                         <div class="x_content col-md-12 col-sm-12 col-xs-12 column" style="text-align : center;margin:auto;">
                             <div class="row grid_slider" style="margin:auto;">
                                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin:auto;">
-                                    <p>焦距调节</p>
+                                    <p style="margin-top: 25px;margin-bottom: 25px">角度微调</p>
+                                    <p style="margin-top: 25px;margin-bottom: 25px">指定角度调节</p>
                                     <input type="text" class="camerazoom" value="" id="camera_zoom" style="margin:auto;"/>
                                 </div>
                             </div>
