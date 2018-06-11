@@ -21,6 +21,7 @@ var show_image_url=basic_address+"imageshow/ImageShow.html";
 var weather_info="";
 var alarm_interval = null;
 var alarm_interval_tab = null;
+
 function logout(){
     delCookie("Environmental.inspection.session");
     window.location=httphead+"//"+window.location.host+basic_address+"login.html";
@@ -198,6 +199,7 @@ var point_selected_login = [];
 var point_selected_maintenance = [];
 
 var point_selected_repair = null;
+var camera_status = [];
 /*
 var lineChartData = {
     labels : ["January","February","March","April","May","June","July"],
@@ -353,7 +355,7 @@ $(document).ready(function() {
             var statcode = $("#VideoModuleStatCode_Input").val();
             var vorh = "z";
             var value = data.from;
-            move_camera(statcode,vorh,value);
+            move_camera($("#VideoModule_Choice").val(),statcode,vorh,value);
         }
     });
     $(".rtspzoom").ionRangeSlider({
@@ -1295,7 +1297,7 @@ $(document).ready(function() {
         window.open(httphead+"//"+vcraddress,'监控照片',"height=480, width=640, top=0, left=400,toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
     });
     $("#ModuleVCRreset").on('click',function() {
-        reset_camera($("#VideoModuleStatCode_Input").val());
+        reset_camera($("#VideoModule_Choice").val(),$("#VideoModuleStatCode_Input").val());
     });
     $("#MonitorTableFlash").on('click',function() {
         query_static_warning();
@@ -1336,26 +1338,33 @@ $(document).ready(function() {
 	$("#btn_camera_up").on('click',function() {
 		var camera_state_code = $('#VideoModuleStatCode_Input').val();
 		if(camera_state_code!==undefined && camera_state_code!==""){
-			move_camera(camera_state_code,"v","1");
+			move_camera($("#VideoModule_Choice").val(),camera_state_code,"v","1");
 		}
     });
 	$("#btn_camera_down").on('click',function() {
 		var camera_state_code = $('#VideoModuleStatCode_Input').val();
 		if(camera_state_code!==undefined && camera_state_code!==""){
-			move_camera(camera_state_code,"v","-1");
+			move_camera($("#VideoModule_Choice").val(),camera_state_code,"v","-1");
 		}
     });
 	$("#btn_camera_right").on('click',function() {
 		var camera_state_code = $('#VideoModuleStatCode_Input').val();
 		if(camera_state_code!==undefined && camera_state_code!==""){
-			move_camera(camera_state_code,"h","1");
+			move_camera($("#VideoModule_Choice").val(),camera_state_code,"h","1");
 		}
     });
 	$("#btn_camera_left").on('click',function() {
 		var camera_state_code = $('#VideoModuleStatCode_Input').val();
 		if(camera_state_code!==undefined && camera_state_code!==""){
-			move_camera(camera_state_code,"h","-1");
+			move_camera($("#VideoModule_Choice").val(),camera_state_code,"h","-1");
 		}
+    });
+    $("#VideoModule_Choice").on('change',function() {
+        var  localstatus = camera_status[parseInt($("#VideoModule_Choice").val())-1];
+        $('#camera_zoom').data("ionRangeSlider").update({
+            from:localstatus.zoom
+        });
+        //change_camera_status(localstatus.id,localstatus.h,localstatus.v,localstatus.url,localstatus.zoom);
     });
     $(".lock_monitor_btn").on('click',function() {
         monitor_lock();
@@ -6433,6 +6442,7 @@ function addMarker(point){
 		});
 	};
     if(monitor_map_list === null) monitor_map_list = [];
+    map_MPMonitor.clearOverlays();
     for(var i=0;i<monitor_map_list.length;i++){
         var t_point = new BMap.Point(parseFloat(monitor_map_list[i].Longitude),parseFloat(monitor_map_list[i].Latitude));
         var iconaddress ="";
@@ -8411,15 +8421,26 @@ function user_message_update(){
     });*/
 }
 
-function change_camera_status(hvalue,vvalue,url,zoom){
+function change_camera_status(id,hvalue,vvalue,url,zoom){
 	var txt = "当前：水平="+hvalue+"/垂直="+vvalue+"；调节单位：水平="+camera_unit_h+"/垂直="+camera_unit_v;
 
 	//$('#VideoModuleCameraState_Input').val(txt);
-	$('#video_img').attr("src",url);
+    if($("#VideoModule_Choice").val() === id){
+        $('#camera_zoom').data("ionRangeSlider").update({
+            from:zoom
+        });
+    }
+        camera_status[parseInt(id)-1] = {
+            id:id,
+            v:vvalue,
+            h:hvalue,
+            zoom:zoom,
+            url:url
+        };
+
+	$('#video_img'+id).attr("src",url);
     //console.log("zoom="+zoom);
-    $('#camera_zoom').data("ionRangeSlider").update({
-        from:zoom
-    });
+
 
 }
 function get_camera_unit(){
@@ -8465,7 +8486,11 @@ function get_camera_status(statcode){
 	var get_camera_status_callback = function(result){
         var ret = result.status;
         if(ret == "true"){
-            change_camera_status(result.ret.h,result.ret.v,result.ret.url,result.ret.zoom);
+            camera_status = result.ret;
+            for(var i=0;i<result.ret.length;i++){
+
+                change_camera_status(result.ret[i].id,result.ret[i].h,result.ret[i].v,result.ret[i].url,result.ret[i].zoom);
+            }
         }else{
             show_alarm_module(true,"获取摄像头基本单位失败，请重新登录！"+result.msg,null);
         }
@@ -8484,10 +8509,11 @@ function get_camera_status(statcode){
     });*/
 }
 
-function move_camera(statcode,vorh,value){
+function move_camera(id,statcode,vorh,value){
 	
 	var body = {
 		StatCode:statcode,
+        id:id,
 		adj: value
 	};
     var map;
@@ -8517,7 +8543,7 @@ function move_camera(statcode,vorh,value){
 	var move_camera_callback = function(result){
         var ret = result.status;
         if(ret == "true"){
-            change_camera_status(result.ret.h,result.ret.v,result.ret.url,result.ret.z);
+            change_camera_status(result.ret.id,result.ret.h,result.ret.v,result.ret.url,result.ret.z);
         }else{
             show_alarm_module(true,"改变摄像头参数失败，请重新登录！"+result.msg,null);
         }
@@ -8535,10 +8561,11 @@ function move_camera(statcode,vorh,value){
         }
     });*/
 }
-function reset_camera(statcode){
+function reset_camera(id,statcode){
 
     var body = {
-        StatCode:statcode
+        StatCode:statcode,
+        id:id
     };
     var map = {
         action: "CameraReset",
@@ -8551,7 +8578,7 @@ function reset_camera(statcode){
     var move_camera_callback = function(result){
         var ret = result.status;
         if(ret == "true"){
-            change_camera_status(result.ret.h,result.ret.v,result.ret.url,result.ret.z);
+            change_camera_status(result.ret.id,result.ret.h,result.ret.v,result.ret.url,result.ret.z);
         }else{
             show_alarm_module(true,"改变摄像头参数失败，请重新登录！"+result.msg,null);
         }
@@ -9240,7 +9267,7 @@ function get_camera_and_video_web(statcode,ifcamera,ifvideo){
         type:"mod",
         user:usr.id
     };
-    var move_camera_callback = function(result){
+    var get_camera_and_video_web_callback = function(result){
         var ret = result.status;
         if(ret == "true"){
             if(ifcamera){
@@ -9255,7 +9282,7 @@ function get_camera_and_video_web(statcode,ifcamera,ifvideo){
             show_alarm_module(true, "请重新登录！" + result.msg, null);
         }
     };
-    JQ_get(request_head,map,move_camera_callback);
+    JQ_get(request_head,map,get_camera_and_video_web_callback);
 }
 function get_pm(city_name){
     var cityname = city_name;

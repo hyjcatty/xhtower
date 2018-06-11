@@ -4498,6 +4498,14 @@
                                 <span class="input-group-addon" id="VideoModuleStatName" style="min-width: 100px">塔站名称</span>
                                 <input type="text" class="form-control" placeholder="塔站名称" aria-describedby="basic-addon1" id="VideoModuleStatName_Input" disabled="disabled"/>
                             </div>
+                            <div class="input-group ">
+                                <span class="input-group-addon" id="VideoModuleCamera" style="min-width: 100px">摄像头选择</span>
+                                <select type="text" class="form-control" placeholder="摄像头选择" aria-describedby="basic-addon1" id="VideoModule_Choice" >
+                                    <option value="1">第一摄像头</option>
+                                    <option value="2">第二摄像头</option>
+                                    <option value="3">第三摄像头</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-md-12 col-sm-12 col-xs-12 column" >
                             <button type="button" class="btn btn-primary" id="ModuleVCRreset">位置归零</button>
@@ -4591,9 +4599,21 @@
                         <p/>
                         <p/-->
                         <div class="col-md-12 col-sm-12 col-xs-12 column" >
-                            <p style="text-align : center">
-                                <img src="./video/screenshot/default.png" alt="当前显示" id="video_img" style=" width:100%;margin:auto;"/>
-                            </p>
+                            <div class="col-md-6 col-sm-6 col-xs-6 column" >
+                                <p style="text-align : center">
+                                    <img src="./video/screenshot/default.png" alt="当前显示" id="video_img1" style=" width:100%;margin:auto;"/>
+                                </p>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 column" >
+                                <p style="text-align : center">
+                                    <img src="./video/screenshot/default.png" alt="当前显示" id="video_img2" style=" width:100%;margin:auto;"/>
+                                </p>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6 column" >
+                                <p style="text-align : center">
+                                    <img src="./video/screenshot/default.png" alt="当前显示" id="video_img3" style=" width:100%;margin:auto;"/>
+                                </p>
+                            </div>
                         </div>
                         <div class="clearfix"></div>
                     </div>

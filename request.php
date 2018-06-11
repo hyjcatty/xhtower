@@ -3117,6 +3117,7 @@ REQUEST:
     };
 RESPONSE:
 	$camerastatus=array(
+	    'id'=>'1',
 		'v'=>"120~",
 		'h'=>"120~",
         'zoom'=>'5',
@@ -3134,12 +3135,34 @@ RESPONSE:
 		$body_in = $_GET['body'];
 	$StatCode = $body_in["StatCode"];
 	$videocode = rand(1,5);
-	$camerastatus=array(
-	   'v'=>"120~",
-	   'h'=>"120~",
+	$camerastatus1=array(
+	    'id'=>'1',
+	   'v'=>"110~",
+	   'h'=>"110~",
 	   'zoom'=>'0',
-	   'url'=>$install_path."/video/screenshot/".(string)$videocode.".png"
+	   'url'=>$install_path."/video/screenshot/".(string)(rand(1,5)).".png"
 	);
+	$camerastatus2=array(
+
+	    'id'=>'2',
+    	   'v'=>"120~",
+    	   'h'=>"120~",
+    	   'zoom'=>'0',
+    	   'url'=>$install_path."/video/screenshot/".(string)(rand(1,5)).".png"
+    	);
+    $camerastatus3=array(
+
+	    'id'=>'3',
+           'v'=>"130~",
+           'h'=>"130~",
+           'zoom'=>'0',
+           'url'=>$install_path."/video/screenshot/".(string)(rand(1,5)).".png"
+        );
+    $camerastatus=array(
+	);
+    array_push($camerastatus,$camerastatus1);
+    array_push($camerastatus,$camerastatus2);
+    array_push($camerastatus,$camerastatus3);
 	$retval=array(
 		'status'=>'true',
 		'ret'=>$camerastatus,
@@ -3217,11 +3240,13 @@ RESPONSE:
 	$usr = $_GET["user"];
 	$StatCode = $body_in["StatCode"];
 	$adj = $body_in["adj"];
+	$id = $body_in["id"];
 	$videocode = rand(1,5);
 	$camerastatus=array(
+	'id'=>$id,
 	   'v'=>"120~",
 	   'h'=>"120~",
-	   'z'=>"0",
+	   'z'=>$adj,
 	   'url'=>$install_path."/video/screenshot/".(string)$videocode.".png"
 	);
 	$retval=array(
@@ -3278,8 +3303,10 @@ RESPONSE:
 	$usr = $_GET["user"];
 	$StatCode = $body_in["StatCode"];
 	$adj = $body_in["adj"];
+	$id = $body_in["id"];
 	$videocode = rand(1,5);
 	$camerastatus=array(
+	'id'=>$id,
 	   'v'=>"120~",
 	   'h'=>"120~",
             'z'=>"0",
@@ -3314,8 +3341,10 @@ case "CameraHAdj":
 	$body_in = $_GET['body'];
 	$StatCode = $body_in["StatCode"];
 	$adj = $body_in["adj"];
+	$id = $body_in["id"];
 	$videocode = rand(1,5);
 	$camerastatus=array(
+	    'id'=>$id,
 		'v'=>"120~",
 		'h'=>"120~",
             'z'=>"0",
@@ -3333,9 +3362,11 @@ case "CameraHAdj":
         $usr = $_GET["user"];
         $body_in = $_GET['body'];
         $StatCode = $body_in["StatCode"];
+	$id = $body_in["id"];
         //$adj = $body_in["adj"];
         $videocode = rand(1,5);
         $camerastatus=array(
+	    'id'=>$id,
             'v'=>"0~",
             'h'=>"0~",
             'z'=>"0",
