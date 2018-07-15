@@ -5162,7 +5162,47 @@ RESPONSE:
     		'auth'=>'true'
     	);
         $jsonencode = _encode($retval);
-    	echo $jsonencode; break;
+        echo $jsonencode; break;
+    case "GetNeonStatus":
+        $body= $_GET['body'];
+        $time=rand(0,23);
+        $clock=rand(0,1);
+        $starttime=(string)$time;
+        if($clock == 0)  $starttime= $starttime.":00";
+        else  $starttime= $starttime.":30";
+        $time=rand(0,23);
+        $clock=rand(0,1);
+        $endtime=(string)$time;
+        if($clock == 0)  $endtime= $endtime.":00";
+        else  $endtime= $endtime.":30";
+        $lightstrip = array();
+        $lightnumber = rand(1,4);
+        for($i=0;$i<$lightnumber;$i++){
+            array_push($lightstrip,rand(1,9));
+        }
+        $ret = array(
+            'start'=>$starttime,
+            'end'=>$endtime,
+            'mode'=>$lightstrip,
+            'target'=>(string)(rand(255,1024))
+        );
+        $retval=array(
+            'status'=>'true',
+            'ret'=>$ret,
+            'msg'=>'success',
+            'auth'=>'true'
+        );
+        $jsonencode = _encode($retval);
+        echo $jsonencode; break;
+    case "SetNeonStatus":
+        $body= $_GET['body'];
+        $retval=array(
+            'status'=>'true',
+            'msg'=>'success',
+            'auth'=>'true'
+        );
+        $jsonencode = _encode($retval);
+        echo $jsonencode; break;
 	default:
 	break;
 }

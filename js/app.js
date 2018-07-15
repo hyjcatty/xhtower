@@ -165,7 +165,8 @@ var alarm_array = null;
 //alarm handle control
 var Warning_Handle_table_initialized = false;
 var if_Warning_Handle_table_initialize = false;
-
+var Neon_Conf_initialized = false;
+var Neon_Conf_selected=null;
 //Export Control
 var export_table_name = null;
 var if_table_initialize = false;
@@ -809,7 +810,7 @@ $(document).ready(function() {
         CURRENT_URL = "NeonConf";
         active_menu("NeonConf");
         touchcookie();
-        Neon_Conf();
+        neon_conf();
     });
     $("#NeonManage").on('click',function(){
         CURRENT_URL = "NeonManage";
@@ -1136,13 +1137,13 @@ $(document).ready(function() {
     });
 
     $("#DevProjCode_choice").change(function(){
-        get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),"");
+        get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),"",false);
     });
     $("#QueryProjCode_choice").change(function(){
-        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"");
+        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"",false);
     });
     $("#WarningHandleProj_choice").change(function(){
-        get_proj_point_option($("#WarningHandleProj_choice").val(),$("#WarningHandlePoint_choice"),"");
+        get_proj_point_option($("#WarningHandleProj_choice").val(),$("#WarningHandlePoint_choice"),"",false);
     });
     $("#AlarmQueryCommit").on('click',function(){
 
@@ -1530,6 +1531,17 @@ $(document).ready(function() {
     $("#NewRepair").on("click",function(){
         show_new_repair_modal();
     });
+    $("#NeonConfProj_choice").change(function(){
+        get_proj_point_option($("#NeonConfProj_choice").val(),$("#NeonConfPoint_choice"),"",true);
+        window.setTimeout(get_neon_status, wait_time_middle);
+    });
+    $("#NeonConfPoint_choice").on('change',function() {
+        get_neon_status();
+        //change_camera_status(localstatus.id,localstatus.h,localstatus.v,localstatus.url,localstatus.zoom);
+    });
+    $("#NeoModeSetting").on("click",function(){
+        set_neon_status();
+    });
     //alert($(window).height());
     //alert($(window).width());
     clear_window();
@@ -1696,6 +1708,14 @@ function warning_handle(){
     //query_warning_handle_list();
     warning_handle_initialize();
 }
+function neon_conf(){
+    clear_window();
+    $("#NeonConfView").css("display","block");
+    write_title("灯带控制","请选择对应塔台");
+    hide_searchbar();
+    //query_warning_handle_list();
+    neon_conf_initialize();
+}
 function desktop(){
     clear_window();
     hide_searchbar();
@@ -1842,13 +1862,13 @@ function AD_Manage(){
     write_title("施工中","");
     hide_searchbar();
     $("#Undefined").css("display","block");
-}
+}/*
 function Neon_Conf(){
     clear_window();
     write_title("施工中","");
     hide_searchbar();
     $("#Undefined").css("display","block");
-}
+}*/
 function Neon_Manage(){
     clear_window();
     write_title("施工中","");
@@ -1900,6 +1920,8 @@ function clear_window(){
     $("#KeyHistoryView").css("display","none");
     $("#KeyAuthView").css("display","none");
     $("#AuditStabilityView").css("display","none");
+
+    $("#NeonConfView").css("display","none");
 }
 
 
@@ -5458,7 +5480,7 @@ function show_new_dev_module(){
     $("#DevStatCode_choice").empty();
     $("#DevProjCode_choice").empty();
     $("#DevProjCode_choice").append(get_proj_option());
-    get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),"");
+    get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),"",false);
     $("#DevStartTime_Input").val("");
     $("#DevProductTime_Input").val("");
     $("#DevDevStatus_choice").val("true");
@@ -5536,7 +5558,7 @@ function show_mod_dev_module(device){
 
     $("#DevProjCode_choice").append(get_proj_option(device.ProjCode));
     //console.log($("#DevProjCode_choice").val());
-    get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),device.StatCode);
+    get_proj_point_option($("#DevProjCode_choice").val(),$("#DevStatCode_choice"),device.StatCode,false);
 
     $("#DevStatCode_choice").val(device.StatCode);
     $("#DevStartTime_Input").val(device.StartTime);
@@ -5617,7 +5639,7 @@ function get_proj_option(id){
     }
     return txt;
 }
-function get_proj_point_option(ProjCode,select,select_value){
+function get_proj_point_option(ProjCode,select,select_value,ifall){
     select.empty();
 
     if(ProjCode ==="" || ProjCode === null){
@@ -5636,6 +5658,9 @@ function get_proj_point_option(ProjCode,select,select_value){
                 txt = txt +"<option value="+point_list[i].id+">"+point_list[i].name+"</option>";
             }
         }
+    }
+    if(ifall){
+        txt="<option value='all'>全部站点</option>"+txt;
     }
     select.empty();
     select.append(txt);
@@ -7818,14 +7843,14 @@ function Data_export_alarm() {
     if(alarm_selected!==null){
         $("#QueryProjCode_choice").append(get_proj_option(alarm_selected.ProjCode));
         //console.log($("#DevProjCode_choice").val());
-        get_proj_point_option($("#QueryProjCode_choice").val(), $("#QueryStatCode_choice"), alarm_selected.StatCode);
+        get_proj_point_option($("#QueryProjCode_choice").val(), $("#QueryStatCode_choice"), alarm_selected.StatCode,false);
 
         $("#QueryStatCode_choice").val(alarm_selected.StatCode);
     }
     else{
         $("#QueryProjCode_choice").append(get_proj_option());
         //console.log($("#DevProjCode_choice").val());
-        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"");
+        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"",false);
     }
     $("#QueryStartTime_Input").val(get_yesterday());
     $("#QueryEndTime_Input").val(get_yesterday());
@@ -7848,14 +7873,14 @@ function Data_export_alarm2() {
     if(alarm_selected!==null){
         $("#QueryProjCode_choice").append(get_proj_option(alarm_selected.ProjCode));
         //console.log($("#DevProjCode_choice").val());
-        get_proj_point_option($("#QueryProjCode_choice").val(), $("#QueryStatCode_choice"), alarm_selected.StatCode);
+        get_proj_point_option($("#QueryProjCode_choice").val(), $("#QueryStatCode_choice"), alarm_selected.StatCode,false);
 
         $("#QueryStatCode_choice").val(alarm_selected.StatCode);
     }
     else{
         $("#QueryProjCode_choice").append(get_proj_option());
         //console.log($("#DevProjCode_choice").val());
-        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"");
+        get_proj_point_option($("#QueryProjCode_choice").val(),$("#QueryStatCode_choice"),"",false);
     }
     $("#QueryStartTime_Input").val(get_yesterday());
     $("#QueryEndTime_Input").val(get_yesterday());
@@ -8525,7 +8550,7 @@ function move_camera(id,statcode,vorh,value){
 			user:usr.id
             
         };
-    }else if(vorh == "H"){
+    }else if(vorh == "h"){
         map = {
             action: "CameraHAdj",
             body:body,
@@ -9001,7 +9026,7 @@ function build_warning_handle_proj_choice(){
         txt = txt +"<option value="+project_list[i].id+">"+project_list[i].name+"</option>";
     }
     $("#WarningHandleProj_choice").append(txt);
-    get_proj_point_option($("#WarningHandleProj_choice").val(),$("#WarningHandlePoint_choice"),"");
+    get_proj_point_option($("#WarningHandleProj_choice").val(),$("#WarningHandlePoint_choice"),"",false);
 }
 function warning_handle_initialize(){
     if(Warning_Handle_table_initialized === false){
@@ -9013,8 +9038,6 @@ function warning_handle_initialize(){
         }
         Warning_Handle_table_initialized = true;
     }
-
-
 }
 
 function query_warning_handle_list(){
@@ -9718,4 +9741,110 @@ function new_repair_info(repair){
         get_point_maintenance(point_selected.StatCode);
     };
     JQ_get(request_head,map,new_repair_info_callback);
+}
+
+
+
+function build_neon_conf_proj_choice(){
+    if(project_list === null) return;
+    var txt ="";
+    if(project_list === null) project_list = [];
+    for( i=0;i<project_list.length;i++){
+        txt = txt +"<option value="+project_list[i].id+">"+project_list[i].name+"</option>";
+    }
+    $("#NeonConfProj_choice").append(txt);
+    get_proj_point_option($("#NeonConfProj_choice").val(),$("#NeonConfPoint_choice"),"",true);
+
+    window.setTimeout(get_neon_status, wait_time_long);
+}
+function neon_conf_initialize(){
+    if(Neon_Conf_initialized === false){
+        if(project_list === null) {
+            get_project_list();
+            window.setTimeout(build_neon_conf_proj_choice, wait_time_long);
+        }else{
+            build_neon_conf_proj_choice();
+
+        }
+        Neon_Conf_initialized = true;
+    }
+}
+function get_neon_status(){
+
+    var body={
+        projCode: $("#NeonConfProj_choice").val(),
+        statCode: $("#NeonConfPoint_choice").val(),
+
+    };
+    var map={
+        action:"GetNeonStatus",
+        type:"query",
+        body: body,
+        user:usr.id
+    };
+    var get_neon_status_callback = function(result){
+        var ret = result.status;
+        if(ret == "true"){
+            Neon_Conf_selected = result.ret;
+            $("#NeonConfStart_choice").val(Neon_Conf_selected.start);
+            $("#NeonConfEnd_choice").val(Neon_Conf_selected.end);
+            $("#NeonConfTarget_Input").val(Neon_Conf_selected.target);
+            var txt ="";
+            for(var i=0;i<Neon_Conf_selected.mode.length;i++){
+                txt = txt +"<div class='col-md-3 col-sm-6 col-xs-12'><div class='input-group' >"+
+                    "<span class='input-group-addon'  style='min-width: 100px'>灯带-"+i+"-模式</span>"+
+                    "<select class='form-control' placeholder=' ' aria-describedby='basic-addon1' id='NeoMode_"+i+"'>";
+                for(var k=1;k<=9;k++){
+                    if(Neon_Conf_selected.mode[i]==k)
+                        txt = txt +"<option value="+k+" selected='selected'>模式"+k+"</option>";
+                    else
+                        txt = txt +"<option value="+k+">模式"+k+"</option>";
+                }
+                txt = txt +    "</select></div></div>";
+            }
+            $("#NeoMode").empty();
+            $("#NeoMode").append(txt);
+        }else {
+            show_alarm_module(true, "请重新登录！" + result.msg, null);
+        }
+    };
+    JQ_get(request_head,map,get_neon_status_callback);
+}
+function set_neon_status(){
+
+    var mode = [];
+    for(var i=0;i<Neon_Conf_selected.mode.length;i++){
+        mode.push($("#NeoMode_"+i).val());
+    }
+    if ($("#NeonConfTarget_Input").val() === ""){
+        $("#NeonConfTarget_Input").focus();
+        return;
+    }
+    var body={
+        projCode: $("#NeonConfProj_choice").val(),
+        statCode: $("#NeonConfPoint_choice").val(),
+        start: $("#NeonConfStart_choice").val(),
+        end: $("#NeonConfEnd_choice").val(),
+        mode:mode,
+        target:$("#NeonConfTarget_Input").val()
+
+    };
+    var map={
+        action:"SetNeonStatus",
+        type:"query",
+        body: body,
+        user:usr.id
+    };
+    var set_neon_status_callback = function(result){
+        if(result.status == "false"){
+            setTimeout(function(){
+                show_alarm_module(true,"设置失败！"+result.msg,null);},500);
+            return;
+        }
+        setTimeout(function(){
+            show_alarm_module(false,"设置成功！",null
+            );},500);
+
+    };
+    JQ_get(request_head,map,set_neon_status_callback);
 }
